@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FileText } from "lucide-react"; 
+import { FileText, Plus } from "lucide-react"; 
 
 import TemplateEditor from "../features/templates/TemplateEditor";
-import EntityCreatePage from "../layout/EntityCreatePage";
 import TemplateDocumentationCollapsible from "../features/templates/TemplateDocumentationCollapsible";
 import EntitySearch from "../components/EntitySearch";
 import EntityItem from "../components/EntityItem";
 import ActionButton from "../components/ActionButton";
+import PageReturnLinkHeader from "../layout/PageReturnLinkHeader";
+import EntityPageHeader from "../components/EntityPageHeader";
 import { getTemplates } from "../utils/TemplateStore";
 
 export default function TemplateCreatePage() {
@@ -35,63 +36,71 @@ export default function TemplateCreatePage() {
 
   function handleSearch(query) {
     setFilteredTemplates(
-        templates.filter((t) => t.name.toLowerCase().includes(query.toLowerCase())
-    )
-  );
-}
+        templates.filter((t) => t.name.toLowerCase().includes(query.toLowerCase()))
+    );
+  }
+  const templatesLibraryPath = "/templates";
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
-      <EntityCreatePage title="Template" backLinktTo="../templates">
+      <PageReturnLinkHeader linkLabel="Back to Templates" backTo={templatesLibraryPath}>
         {!templateChosen && templates.length > 0 ? (
-          <>
-            <h2 className="text-xl font-bold mb-4">Start from a Template</h2>
-            <EntitySearch 
-              title="Search templates"
-              placeholder="Search by name..."
-              onSearch={handleSearch}
+          <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
+            <EntityPageHeader 
+                title="Starting from an existing template?"
+                description="Your company has already created some analytics template. Find the one that fit your use case... or create it from scratch!"
+                breadcrumbs={[{ label: "Templates", to: templatesLibraryPath }, { label: "New", to: "" }]}
+                actions={[
+                    {Component: ActionButton, props: {onClick: handleSkip, label: "Start from scratch", variant: "primary", Icon: Plus}}
+                ]}
+                actionsPosition="bottom"
             />
-            <div className="space-y-4 mt-4 mb-4">
-              {filteredTemplates.map((template)=>{
-                return (
-                  <EntityItem
-                    key={template.id}
-                    item={template}
-                    buttons={[
-                      {
-                        Component: ActionButton,
-                        props: {
-                          onClick: () => handleSelect(template),
-                          label: "Use This Template",
-                          variant: "primary",
-                          iconOnly: false
+              <EntitySearch 
+                title="Search templates"
+                placeholder="Search by name..."
+                onSearch={handleSearch}
+              />
+              <div className="space-y-4 mt-4 mb-4">
+                {filteredTemplates.map((template)=>{
+                  return (
+                    <EntityItem
+                      key={template.id}
+                      item={template}
+                      buttons={[
+                        {
+                          Component: ActionButton,
+                          props: {
+                            onClick: () => handleSelect(template),
+                            label: "Use template",
+                            variant: "primary",
+                            iconOnly: false,
+                            size: "sm"
+                          }
                         }
-                      }
-                    ]}
-                    EntityIcon={FileText}
-                    category={template.category}
+                      ]}
+                      EntityIcon={FileText}
+                      category={template.category}
                     />
                   );
-              })}
-            </div>
-            <ActionButton 
-              onClick={() => handleSkip()}
-              label="Start from scratch"
-              variant="ghost"
-            />
-          </>      
+                })}
+              </div>
+          </div>    
         ) : (
-          <>
-            <h1 className="text-2xl font-bold mb-2">Template definition</h1>
+          <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
+            <EntityPageHeader 
+                title="Define your template"
+                description="The template editor allows you to define analytics snippets to track users achievements in a very flexible way. Check the documentation below to understand how to structure your template and get one step closer to make data-driven decisions."
+                breadcrumbs={[{ label: "Templates", to: templatesLibraryPath }, { label: "New", to: "" }]}
+            />
             <TemplateDocumentationCollapsible />
             <TemplateEditor 
               mode="create" 
               initialTemplate={selectedTemplate} 
               onSubmit={(template) => navigate(`/templates/${template.id}`)}
             />
-          </>
+          </div>
         )}
-      </EntityCreatePage>
+      </PageReturnLinkHeader>
     </div>
   );
 }

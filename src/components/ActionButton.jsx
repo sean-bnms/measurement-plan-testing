@@ -4,12 +4,13 @@ import clsx from "clsx";
  * A flexible action button with support for icons, variants, sizes, and accessibility.
  *
  * @param {Object} props
- * @param {() => void} props.onClick - Click handler.
+ * @param {() => void} [props.onClick] - Click handler.
  * @param {React.ElementType} [props.Icon] - Optional icon component.
  * @param {string} props.label - Button text (used for accessibility even if hidden).
  * @param {'primary' | 'danger' | 'ghost'} [props.variant] - Visual style.
  * @param {'sm' | 'md' | 'lg'} [props.size] - Size of the button.
  * @param {boolean} [props.iconOnly] - Whether to visually hide the label (accessible via aria-label).
+ * @param {string} [props.type] - Whether the html button has a specific type (e.g. 'submit' for form buttons)
  */
 export default function ActionButton({
   onClick,
@@ -17,7 +18,8 @@ export default function ActionButton({
   label,
   variant = "primary",
   size = "md",
-  iconOnly = false
+  iconOnly = false,
+  type = "button"
 }) {
   const sizeClasses = {
     sm: "px-2.5 py-1.5 text-xs",
@@ -40,7 +42,8 @@ export default function ActionButton({
 
   return (
     <button
-      onClick={onClick}
+      type={type}
+      onClick={onClick? onClick : null}
       className={clsx(baseClasses, sizeClasses[size], variants[variant])}
       aria-label={iconOnly ? label : undefined}
     >

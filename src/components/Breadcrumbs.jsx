@@ -19,9 +19,7 @@ export default function Breadcrumbs({ items }) {
             {index > 0 && <ChevronRight className="w-4 h-4 mx-1 text-gray-400" aria-hidden="true" />}
             <NavLink
               to={item.to}
-              className={({ isActive }) =>
-                isActive ? "text-blue-600 font-medium" : "hover:underline"
-              }
+              className={index == items.length - 1 ? "text-blue-600 font-medium" : "hover:underline"}
             >
               {item.label}
             </NavLink>

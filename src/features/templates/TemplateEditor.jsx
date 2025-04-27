@@ -1,9 +1,11 @@
 import { useState, useRef } from "react";
 import Editor from "@monaco-editor/react";
+import { SaveIcon, Plus } from "lucide-react";
 
 import { saveTemplate } from "../../utils/TemplateStore";
 import { exampleTemplate, validateTemplate } from "../../utils/TemplateEdition"
 
+import ActionButton from "../../components/ActionButton";
 import Alert from "../../components/Alert";
 
 /**
@@ -53,51 +55,65 @@ export default function TemplateEditor({ mode = "create", initialTemplate, onSub
         }
     }
 
+    const jsonEditor =  (
+        <Editor
+            height="500px"
+            defaultLanguage="json"
+            defaultValue={editorValue.current}
+            theme="vs"
+            onChange={(value) => {
+                editorValue.current = value;
+                validateSchemaLive(value);
+            }}
+            options={{
+                minimap: { enabled: false },
+                fontSize: 14,
+                automaticLayout: true,
+            }}
+        />
+    );
+
+    const jsonFormatAlerts = validationMessages.length > 0 && (
+        <ul className="space-y-2 w-full max-w-3xl mb-2">
+            {validationMessages.map((msg, i) => (
+            <Alert 
+                key={i} 
+                message={msg}
+                type="warning"
+                closable={false}
+            />
+            ))}
+        </ul>
+        );
+    
+    const saveBtn = (
+        <ActionButton
+            type="submit"
+            variant="primary"
+            label={mode === "edit" ? "Save Changes" : "Create Template"}
+            Icon={mode === "edit" ? SaveIcon : Plus}
+        />);
+    
+    const savingErrorAlert = ( error &&
+        <Alert 
+            message={`An issue was encountered: ${error}`} 
+            type="error"
+        />);
+
     return (
         <form action={handleSave}>
             <label className="block text-sm font-medium mb-1">Template JSON</label> 
             
             <div className="flex flex-col items-center mb-4">
-                {validationMessages.length > 0 && (
-                <ul className="space-y-2 w-full max-w-3xl mb-2">
-                    {validationMessages.map((msg, i) => (
-                    <Alert 
-                        key={i} 
-                        message={msg}
-                        type="warning"
-                        closable={false}
-                    />
-                    ))}
-                </ul>
-                )}
-
+                { jsonFormatAlerts }
                 <div className="w-full border border-gray-300 rounded overflow-hidden max-w-3xl">
-                <Editor
-                    height="500px"
-                    defaultLanguage="json"
-                    defaultValue={editorValue.current}
-                    theme="vs"
-                    onChange={(value) => {
-                        editorValue.current = value;
-                        validateSchemaLive(value);
-                    }}
-                    options={{
-                        minimap: { enabled: false },
-                        fontSize: 14,
-                        automaticLayout: true,
-                    }}
-                />
+                    { jsonEditor }
                 </div>
             </div>
 
-            {error && <p className="text-red-600 text-sm mb-2">Error: {error}</p>}
+            { savingErrorAlert }
 
-            <button
-                type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-                {mode === "edit" ? "Save Changes" : "Create Template"}
-            </button>
+            { saveBtn }
         </form>
     );
 }

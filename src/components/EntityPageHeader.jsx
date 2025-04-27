@@ -11,6 +11,7 @@ import Badge from "./Badge";
  * @param {Array<{ label: string, to: string }>} [props.breadcrumbs=[]] - Navigation path items.
  * @param {Array<{ label: string, variant?: 'info' | 'success' | 'warning' | 'error' | 'default' }>} [props.badges=[]] - Badge elements shown next to the title.
  * @param {Array<{ Component: React.ElementType, props: Object }>} [props.actions=[]] - Action buttons or elements rendered to the right.
+ * @param {string} [props.actionsPosition] - Optional indication whether action buttons should be on the top 'right' of the header or on the 'bottom' of the header, left aligned after the description text
  *
  * @returns {JSX.Element}
  */
@@ -34,7 +35,7 @@ export default function EntityPageHeader({
   );
 
   return (
-    <div className="flex items-start justify-between flex-wrap gap-4 mb-10">
+    <div className="flex items-start justify-between flex-wrap gap-4 mb-4">
       <div className="flex-1 min-w-0 max-w-2xl">
         {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
 
@@ -46,7 +47,7 @@ export default function EntityPageHeader({
         </div>
 
         {description && (
-          <p className="text-sm text-gray-600 mt-2 mb-6">{description}</p>
+          <p className="text-sm text-gray-600 mt-2 mb-4">{description}</p>
         )}
 
         {actionsPosition == "bottom" ? renderActions : null}

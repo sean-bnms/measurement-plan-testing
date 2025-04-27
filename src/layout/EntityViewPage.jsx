@@ -6,6 +6,7 @@ import Modal from "../components/Modal";
 import EntityPageHeader from "../components/EntityPageHeader";
 import NavigationButton from "../components/NavigationButton";
 import ActionButton from "../components/ActionButton";
+import PageReturnLinkHeader from "./PageReturnLinkHeader";
 
 /**
  * A generic page component for rendering the detailed view of an entity.
@@ -50,19 +51,21 @@ export default function EntityViewPage({ id, deleteEntityById, entityRoutingPara
   return (
     <>
       <div className={`relative ${showConfirmationModal ? 'pointer-events-none blur-sm' : ''}`}>
-        <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
-          <EntityPageHeader 
-              title={entityHeaderParams.name}
-              description={entityHeaderParams.description}
-              breadcrumbs={[{ label: entityRoutingParams.collectionName, to: entityRoutingParams.path }, { label: "Details", to: entityPath }]}
-              badges={entityHeaderParams.category ? [{label: entityHeaderParams.category.label, variant: entityHeaderParams.category.color}] : null}
-              actions={[
-                  {Component: NavigationButton, props: {navigateTo: `${entityPath}/edit`, label: "Edit", Icon: Pencil, variant: "primary"}},
-                  {Component: ActionButton, props: {onClick: handleDeleteRequest, label: "Delete", Icon: Trash2, variant: "danger"}}
-              ]}
-          />
-          {children ? children : null}
-        </div>
+        <PageReturnLinkHeader backTo={entityRoutingParams.path} linkLabel={`Back to ${entityRoutingParams.collectionName}`}>
+          <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
+            <EntityPageHeader 
+                title={entityHeaderParams.name}
+                description={entityHeaderParams.description}
+                breadcrumbs={[{ label: entityRoutingParams.collectionName, to: entityRoutingParams.path }, { label: "Details", to: entityPath }]}
+                badges={entityHeaderParams.category ? [{label: entityHeaderParams.category.label, variant: entityHeaderParams.category.color}] : null}
+                actions={[
+                    {Component: NavigationButton, props: {navigateTo: `${entityPath}/edit`, label: "Edit", Icon: Pencil, variant: "primary"}},
+                    {Component: ActionButton, props: {onClick: handleDeleteRequest, label: "Delete", Icon: Trash2, variant: "danger"}}
+                ]}
+            />
+            {children ? children : null}
+          </div>
+        </PageReturnLinkHeader>
       </div>
 
       <Modal 
