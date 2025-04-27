@@ -1,12 +1,11 @@
-# React + Vite
+# Analytics measurements: managing analytics set up across Customer Journeys 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This application is a work in progress, allowing me to discover web application development in React. 
+The application main purpose is to ease the implementation of measurement plans for companies, by providing:
+- a way to define analytics tracking snippets for various channels and manage them all from a same catalog, in a developer friendly manner
+- defining measurment plans for omnichannel customer journeys in a friendly manner for Product teams and Development teams
+- test quickly implementations to visualize potential insights in the Analytics reporting tool used
 
-Currently, two official plugins are available:
+## Managing the creation of analytics tracking snippets
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Each organization has a different way to measure interactions along the Customer Journey. 
