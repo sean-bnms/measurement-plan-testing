@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil, Trash2 } from "lucide-react";
 
-import Modal from "../components/Modal";
+import EntityDeletionModal from "../components/EntityDeletionModal";
 import EntityPageHeader from "../components/EntityPageHeader";
 import NavigationButton from "../components/NavigationButton";
 import ActionButton from "../components/ActionButton";
@@ -67,15 +67,12 @@ export default function EntityViewPage({ id, deleteEntityById, entityRoutingPara
           </div>
         </PageReturnLinkHeader>
       </div>
-
-      <Modal 
-        isOpen={showConfirmationModal}
-        title="Confirm deletion"
-        confirmBtn={{ variant:"danger", onClick: () => handleDelete(), label:"Confirm"}}
-        cancelBtn={{ variant:"ghost", onClick: () => setShowConfirmationModal(false), label:"Cancel"}}
-      >
-        <p className="text-sm text-gray-600 mb-4">{`Are you sure you want to delete this ${entityRoutingParams.name.toLowerCase()}?`}</p>
-      </Modal>
+      <EntityDeletionModal 
+        showModal={showConfirmationModal}
+        entityLabel={entityRoutingParams.name.toLowerCase()}
+        onCancel={() => setShowConfirmationModal(false)}
+        onDelete={() => handleDelete()}
+      />
     </>
   );
 }

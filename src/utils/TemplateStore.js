@@ -36,6 +36,10 @@ export function getItem(id, storageKey, itemType) {
     }
 }
 
+function generateId() {
+    return `id_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
 /**
  * Save a new item to localStorage, under the storage key.
  * If a template with the same ID exists, it will be overwritten.
@@ -46,6 +50,11 @@ export function getItem(id, storageKey, itemType) {
 export function saveItem(item, storageKey, itemType) {
     try {
         const existing = getItems(storageKey, itemType);
+
+        // If item has no ID, generate one
+        if (!item.id) {
+            item.id = generateId();
+        }
         const updated = [
           ...existing.filter((i) => i.id !== item.id),
           item,

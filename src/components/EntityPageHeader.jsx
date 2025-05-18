@@ -35,7 +35,7 @@ export default function EntityPageHeader({
   );
 
   return (
-    <div className="flex items-start justify-between flex-wrap gap-4 mb-4">
+    <div className="flex items-start justify-between flex-wrap gap-4 mb-12">
       <div className="flex-1 min-w-0 max-w-2xl">
         {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
 

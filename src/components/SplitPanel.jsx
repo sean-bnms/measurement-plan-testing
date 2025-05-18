@@ -15,6 +15,7 @@ export default function SplitPanel({
 
     const widthClassMap = {
         "2fr_1fr": "md:grid-cols-[2fr_1fr]",
+        "1fr_1fr": "md:grid-cols-[1fr_1fr]",
         "auto_auto": "md:grid-cols-[auto_auto]",
       };
 

@@ -58,17 +58,22 @@ export function validateTemplate(json) {
         "type": "string",
         "optional": false
       },
-      "ecommerce.items[].item_id": {
+      "ecommerce.items.items[i]": {
+        "description": "The representation of an item on the online shop",
+        "type": "array",
+        "optional": false
+      },
+      "ecommerce.items.item_id": {
         "description": "Unique ID of the product",
         "type": "string",
         "optional": false
       },
-      "ecommerce.items[].item_name": {
+      "ecommerce.items.item_name": {
         "description": "Name of the product",
         "type": "string",
         "optional": true
       },
-      "ecommerce.items[].price": {
+      "ecommerce.items.price": {
         "description": "Price displayed to the user",
         "type": "number",
         "optional": false
@@ -79,6 +84,20 @@ export function validateTemplate(json) {
         "optional": true,
         "options": ["digital wallet", "bnpl", "card-based", "cryptocurreny"]
       }
+    }
+  }`;
+
+  export const exampleStructure = `{
+    "event": "purchase",
+    "ecommerce": {
+      "items": [
+        {
+          "item_id": "{{item_id}}",
+          "item_name": "{{item_name}}",
+          "price": "{{price}}"
+        }
+      ],
+      "payment_method": "{{payment_method}}"
     }
   }`;
   

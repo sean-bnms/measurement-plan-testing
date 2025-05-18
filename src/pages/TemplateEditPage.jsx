@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 
 import TemplateEditor from "../features/templates/TemplateEditor";
@@ -16,6 +16,8 @@ export default function TemplateEditPage() {
     const [template, setTemplate] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+
+    let navigate = useNavigate();
     const { id } = useParams();
 
     useEffect(() => {
@@ -30,6 +32,10 @@ export default function TemplateEditPage() {
     function handleDeleteRequest() {
         setShowConfirmationModal(true);
     };
+
+    function handleCancelRequest() {
+        navigate(templateItemPath);
+    };
     
     function handleDelete() {
         deleteEntityById(id);
@@ -38,44 +44,62 @@ export default function TemplateEditPage() {
 
     const templatesLibraryPath = "/templates";
     const templateItemPath = `/templates/${id}`;
+
+    const renderLoadingContent = (
+        <>
+            <EntityPageHeader 
+                title="Edit your template"
+                description="The template editor allows you to define analytics snippets to track users achievements in a very flexible way. Check the documentation below to understand how to structure your template and get one step closer to make data-driven decisions."
+                breadcrumbs={[{ label: "Templates", to: templatesLibraryPath }, { label: "Template", to: templateItemPath }, { label: "Edit", to: "" }]}
+            />
+            <TemplateDocumentationCollapsible />
+            <div className="bg-white rounded p-8 flex justify-center items-center h-40 mt-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                <p className="text-sm text-gray-600 ml-2">Template is loading...</p>
+            </div> 
+        </>
+    );
+
+    const renderEditingContent = (
+        <>
+            <EntityPageHeader 
+                title="Edit your template"
+                description="The template editor allows you to define analytics snippets to track users achievements in a very flexible way. Check the documentation below to understand how to structure your template and get one step closer to make data-driven decisions."
+                breadcrumbs={[{ label: "Templates", to: templatesLibraryPath }, { label: "Template", to: templateItemPath }, { label: "Edit", to: "" }]}
+                actions={[
+                    {Component: ActionButton, props: {onClick: handleCancelRequest, label: "Cancel", variant: "ghost"}},
+                    {Component: ActionButton, props: {onClick: handleDeleteRequest, label: "Delete", Icon: Trash2, variant: "danger"}}
+                ]}
+            />
+            <TemplateDocumentationCollapsible />
+            {showAlert ? (
+                <FadingAlert 
+                    message={`Your template was successfully saved!`}
+                    type="success"
+                    onUnmount={() => setShowAlert(false)}
+                />) : null}
+            <TemplateEditor 
+                mode="edit" 
+                initialTemplate={template} 
+                onSubmit={() => setShowAlert(true)}
+            />
+        </>
+    );
   
     return (
         <div className="p-4 max-w-4xl mx-auto">
             <PageReturnLinkHeader linkLabel="Back to template" backTo={templateItemPath}>
-                {template === null ? (
-                    <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
-                        <EntityPageHeader 
-                            title="Edit your template"
-                            description="The template editor allows you to define analytics snippets to track users achievements in a very flexible way. Check the documentation below to understand how to structure your template and get one step closer to make data-driven decisions."
-                            breadcrumbs={[{ label: "Templates", to: templatesLibraryPath }, { label: "Template", to: templateItemPath }, { label: "Edit", to: "" }]}
-                        />
-                        <TemplateDocumentationCollapsible />
-                        <div className="bg-white rounded p-8 flex justify-center items-center h-40 mt-4">
-                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                            <p className="text-sm text-gray-600 ml-2">Template is loading...</p>
-                        </div> 
-                    </div>
-                ) : (
+                {
+                    template === null ? 
+                    (
+                        <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
+                            {renderLoadingContent}
+                        </div>
+                    )
+                    : (
                     <>
                         <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
-                            <EntityPageHeader 
-                                title="Edit your template"
-                                description="The template editor allows you to define analytics snippets to track users achievements in a very flexible way. Check the documentation below to understand how to structure your template and get one step closer to make data-driven decisions."
-                                breadcrumbs={[{ label: "Templates", to: templatesLibraryPath }, { label: "Template", to: templateItemPath }, { label: "Edit", to: "" }]}
-                                actions={[{Component: ActionButton, props: {onClick: handleDeleteRequest, label: "Delete", Icon: Trash2, variant: "danger"}}]}
-                            />
-                            <TemplateDocumentationCollapsible />
-                            {showAlert ? (
-                                <FadingAlert 
-                                    message={`Your template was successfully saved!`}
-                                    type="success"
-                                    onUnmount={() => setShowAlert(false)}
-                                />) : null}
-                            <TemplateEditor 
-                                mode="edit" 
-                                initialTemplate={template} 
-                                onSubmit={() => setShowAlert(true)}
-                            />
+                            {renderEditingContent}
                         </div>
                         <Modal 
                             isOpen={showConfirmationModal}
@@ -86,7 +110,8 @@ export default function TemplateEditPage() {
                             <p className="text-sm text-gray-600 mb-4">Are you sure you want to delete this template?</p>
                         </Modal>
                     </>
-            )}
+                    )
+            }
             </PageReturnLinkHeader>
         </div>
         );

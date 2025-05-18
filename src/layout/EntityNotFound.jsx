@@ -23,7 +23,7 @@ export default function EntityNotFound({
   redirectLabel,
 }) {
   return (
-    <div className="text-center text-gray-600 mt-12">
+    <div className="text-center text-gray-600 mt-12 max-w-6xl">
         
         <span className="text-blue-600">404</span>
         <h2 className="text-xl font-semibold">{entity} not found</h2>

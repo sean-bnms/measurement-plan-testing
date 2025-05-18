@@ -123,14 +123,24 @@ export default function JourneyEditor() {
         <ActionButton onClick={handleJourneySave} variant="primary" label="Save Journey" icon={Save} />
       </div>
 
-      <Modal 
+      <Modal
         isOpen={showModal}
         title="Add a step to the journey"
-        confirmBtn={{ variant:"primary", onClick: () => handleAddStep(), label:"Confirm"}}
-        cancelBtn={{ variant:"ghost", onClick: () => {
-          setShowModal(false);
-          setNameError(""); 
-        }, label:"Cancel"}}
+        actions={[
+          { 
+            Component: ActionButton, 
+            props: { 
+              onClick: () => {
+              setShowModal(false);
+              setJourneyNameError(""); 
+            }, 
+            label: "Cancel", variant: "secondary"}
+          },
+          { 
+            Component: ActionButton, 
+            props: { onClick: () => handleAddStep(), label: "Confirm", variant: "primary"}
+          }
+        ]}
       >
         <Input 
           label="Step Name"

@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Plus, FileText, Trash2, ArrowRight } from "lucide-react"; 
+import { Plus, Trash2, ArrowRight } from "lucide-react"; 
 
 import EntityPageHeader from "../components/EntityPageHeader";
 import EntityItem from "../components/EntityItem";
 import FadingAlert from "../components/FadingAlert";
-import Modal from "../components/Modal";
+import EntityDeletionModal from "../components/EntityDeletionModal";
 import NavigationButton from "../components/NavigationButton";
 import ActionButton from "../components/ActionButton";
 import EntitySearch from "../components/EntitySearch";
@@ -121,12 +121,7 @@ export default function EntityListPage({ entities, entityIcon, entityDescription
             actions={[
               {
                 Component: NavigationButton,
-                props: {
-                  navigateTo: `${entityRoutingParams.path}/new`,
-                  label: `New ${entityLabel}`,
-                  Icon: Plus,
-                  variant: "primary",
-                },
+                props: { navigateTo: `${entityRoutingParams.path}/new`, label: `New ${entityLabel}`, Icon: Plus, variant: "primary"}
               },
             ]}
           />
@@ -150,25 +145,12 @@ export default function EntityListPage({ entities, entityIcon, entityDescription
         </div>
       </div>
 
-      {/* Modal for confirming deletion */}
-      <Modal
-        isOpen={showConfirmationModal}
-        title="Confirm deletion"
-        confirmBtn={{
-          variant: "danger",
-          onClick: () => handleDelete(),
-          label: "Confirm",
-        }}
-        cancelBtn={{
-          variant: "ghost",
-          onClick: () => setShowConfirmationModal(false),
-          label: "Cancel",
-        }}
-      >
-        <p className="text-sm text-gray-600 mb-4">
-          {`Are you sure you want to delete this ${entityLabel}?`}
-        </p>
-      </Modal>
+      <EntityDeletionModal 
+        showModal={showConfirmationModal}
+        entityLabel={entityLabel}
+        onCancel={() => setShowConfirmationModal(false)}
+        onDelete={() => handleDelete()}
+      />
     </>
   );
 }

@@ -20,7 +20,7 @@ export default function Alert({ message, type = "info", closable = false, onClos
   const typeStyles = {
     success: "bg-green-100 border border-green-300 text-green-800",
     error: "bg-red-100 border border-red-300 text-red-800",
-    info: "bg-blue-100 border border-blue-300 text-blue-800",
+    info: "bg-blue-50 border border-blue-200 text-blue-800",
     warning: "bg-yellow-100 border border-yellow-300 text-yellow-800",
   };
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FileText } from "lucide-react";
 
 import EntityListPage from "../layout/EntityListPage";
-import TemplateSidePanel from "../features/templates/TemplateSlidePanel";
+import TemplateSidePanel from "../features/templates/TemplateSidePanel";
 
 import { getTemplates, deleteTemplate } from "../utils/TemplateStore";
 

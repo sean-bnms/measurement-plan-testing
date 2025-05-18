@@ -50,11 +50,11 @@ export default function JsonCodeBlock({ json }) {
       const parsed = JSON.parse(text);
       return renderJson(parsed);
     } catch (err) {
+      console.log(err);
       return `<span class="text-red-500">Invalid JSON</span>`;
     }
   };
   
-
   function handleCopy() {
     navigator.clipboard.writeText(formattedJson);
     setCopied(true);

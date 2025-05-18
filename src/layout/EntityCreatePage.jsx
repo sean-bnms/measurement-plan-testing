@@ -12,7 +12,7 @@ import { ArrowLeft } from "lucide-react";
  */
 export default function EntityCreatePage(props) {
   return (
-    <div className="p-4 max-w-4xl mx-auto">
+    <div className="p-4 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-4">
         <NavLink
           to={props.backLinktTo}

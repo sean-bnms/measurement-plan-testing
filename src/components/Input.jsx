@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import {Info} from "lucide-react";
 
 /**
  * A reusable input component with optional label, error, and icon.
@@ -29,6 +30,7 @@ export default function Input({
   required = false,
   className = "",
   ariaLabel,
+  tooltip= null
 }) {
 
   // handles automatic creation of input id
@@ -46,13 +48,28 @@ export default function Input({
 
   return (
     <div className="mb-4">
+
       {label && (
-        <label
-          htmlFor={inputId}
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          {label} {required && <span className="text-red-500">*</span>}
-        </label>
+        <div className="flex items-center gap-1 mb-1 group relative w-fit">
+          <label htmlFor={inputId} className="text-sm font-medium text-gray-700 mb-1">
+            {label} {required && <span className="text-red-500">*</span>}
+          </label>
+
+          { tooltip ?
+            <>
+              <Info
+                size={16}
+                className="text-blue-500 cursor-pointer"
+                aria-label="Help"
+              />
+
+              <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 w-64 p-2 text-sm text-white bg-gray-800 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                {tooltip}
+              </div>
+            </>
+            : null
+          }
+        </div>
       )}
 
       <div
