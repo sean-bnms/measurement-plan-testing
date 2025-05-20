@@ -22,7 +22,7 @@ export default function SplitPanel({
       const gridColsClass = widthClassMap[templateKey] || widthClassMap["2fr_1fr"];
 
       return (
-        <div className={`grid grid-cols-1 ${gridColsClass} ${gap} mt-10`}>
+        <div className={`grid grid-cols-1 ${gridColsClass} ${gap} h-full`}>
           <div>{left}</div>
           <div>{right}</div>
         </div>

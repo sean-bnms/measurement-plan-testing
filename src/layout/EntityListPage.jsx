@@ -1,12 +1,9 @@
 import { useState } from "react";
-import { Plus, Trash2, ArrowRight } from "lucide-react"; 
+import { Plus, ArrowRight } from "lucide-react"; 
 
 import EntityPageHeader from "../components/EntityPageHeader";
 import EntityItem from "../components/EntityItem";
-import FadingAlert from "../components/FadingAlert";
-import EntityDeletionModal from "../components/EntityDeletionModal";
 import NavigationButton from "../components/NavigationButton";
-import ActionButton from "../components/ActionButton";
 import EntitySearch from "../components/EntitySearch";
 import SplitPanel from "../components/SplitPanel";
 
@@ -29,38 +26,15 @@ import SplitPanel from "../components/SplitPanel";
  * @param {Function} deleteEntity - Function to delete an entity by ID.
  * @param {Function} children - Components to display in the right side panel
  */
-export default function EntityListPage({ entities, entityIcon, entityDescription, entityTitle, entityRoutingParams, searchPlaceholder, deleteEntity, children }) {
+export default function EntityListPage({ entities, entityIcon, entityDescription, entityTitle, entityRoutingParams, searchPlaceholder, children }) {
   const [filteredEntities, setFilteredEntities] = useState([]);
-  const [showAlert, setShowAlert] = useState(false);
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [entityToDelete, setEntityToDelete] = useState(null);
-
+  
   const entityLabel = entityRoutingParams.name.toLowerCase();
-
-  /**
-   * Handles a delete button click, opening the confirmation modal.
-   * @param {Object} entity - The entity to be deleted.
-   */
-  function handleDeleteRequest(entity) {
-    setEntityToDelete(entity);
-    setShowConfirmationModal(true);
-  }
 
   function handleSearch(query) {
     setFilteredEntities(
       entities.filter((e) => e.name.toLowerCase().includes(query.toLowerCase()))
     );
-  }
-
-  function handleDelete() {
-    if (entityToDelete) {
-      const id = entityToDelete.id;
-      deleteEntity(id);
-      setFilteredEntities((prev) => prev.filter((e) => e.id !== id));
-      setShowAlert(true);
-    }
-    setShowConfirmationModal(false);
-    setEntityToDelete(null);
   }
 
   const searchBar = (
@@ -84,18 +58,7 @@ export default function EntityListPage({ entities, entityIcon, entityDescription
               navigateTo: `${entityRoutingParams.path}/${entity.id}`,
               label: "View",
               Icon: ArrowRight,
-              variant: "primary",
-              iconOnly: true
-            }
-          },
-          {
-            Component: ActionButton,
-            props: {
-              onClick: () => handleDeleteRequest(entity),
-              Icon: Trash2,
-              label: "Delete",
-              variant: "danger",
-              iconOnly: true
+              variant: "link"
             }
           }
         ]}
@@ -104,53 +67,38 @@ export default function EntityListPage({ entities, entityIcon, entityDescription
   );
 
   return (
-    <>
-      {/* Main content with optional modal blur effect, triggered when modal is shown */}
-      <div className={`relative ${showConfirmationModal ? 'pointer-events-none blur-sm' : ''}`}>
-        <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
-          <EntityPageHeader 
-            title={entityTitle}
-            description={entityDescription}
-            breadcrumbs={[
-              {
-                label: entityRoutingParams.collectionName,
-                to: entityRoutingParams.path,
-              },
-            ]}
-            actionsPosition="bottom"
-            actions={[
-              {
-                Component: NavigationButton,
-                props: { navigateTo: `${entityRoutingParams.path}/new`, label: `New ${entityLabel}`, Icon: Plus, variant: "primary"}
-              },
-            ]}
-          />
-
-          <SplitPanel 
-            left={
-              <>
-                {searchBar}
-                {showAlert && (
-                  <FadingAlert
-                    message={`Your ${entityLabel} was successfully deleted.`}
-                    type="success"
-                    onUnmount={() => setShowAlert(false)}
-                  />
-                )}
-                {entityList}
-              </>
-              }
-            right={children}
-          />
-        </div>
-      </div>
-
-      <EntityDeletionModal 
-        showModal={showConfirmationModal}
-        entityLabel={entityLabel}
-        onCancel={() => setShowConfirmationModal(false)}
-        onDelete={() => handleDelete()}
+    <div className="bg-white p-8 w-full h-full rounded-lg">
+      <EntityPageHeader 
+        title={entityTitle}
+        description={entityDescription}
+        breadcrumbs={[
+          {
+            label: entityRoutingParams.collectionName,
+            to: entityRoutingParams.path,
+          },
+        ]}
+        actionsPosition="bottom"
+        actions={[
+          {
+            Component: NavigationButton,
+            props: { navigateTo: `${entityRoutingParams.path}/new`, label: `New ${entityLabel}`, Icon: Plus, variant: "primary"}
+          },
+        ]}
       />
-    </>
+
+      <SplitPanel 
+        left={
+          <>
+            <div className="bg-gray-50 px-6 py-4 rounded-md border-1 border-gray-200">
+              {searchBar}
+              <div className="overflow-y-auto h-50">
+                {entityList}
+              </div>
+            </div>
+          </>
+          }
+        right={children}
+      />
+    </div>
   );
 }

@@ -22,17 +22,26 @@ export default function NavigationButton({
     lg: "w-5 h-5",
   };
 
+  const iconOnlySizeClasses = {
+    sm: "p-1.5 text-xs",
+    md: "p-1.5 text-sm",
+    lg: "p-1.5 text-base",
+    xl: "p-1.5 text-xl"
+  }
+
   const baseClasses = "inline-flex items-center justify-center rounded-md font-medium";
   const variants = {
     primary: "bg-blue-600 text-white hover:bg-blue-700",
+    secondary: "bg-gray-200 text-gray-700 hover:bg-gray-300",
     danger: "bg-red-600 text-white hover:bg-red-700",
     ghost: "bg-transparent text-gray-700 hover:bg-gray-100",
+    link: "bg-transparent text-blue-700 hover:bg-gray-100",
   };
 
   return (
     <NavLink
       to={navigateTo}
-      className={clsx(baseClasses, sizeClasses[size], variants[variant])}
+      className={iconOnly ? clsx(baseClasses, iconOnlySizeClasses[size], variants[variant]) : clsx(baseClasses, sizeClasses[size], variants[variant])}
       aria-label={iconOnly ? label : undefined}
     >
       {Icon && (

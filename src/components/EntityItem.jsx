@@ -26,7 +26,7 @@ export default function EntityItem({ item, entityIcon, category, buttons = [] })
 
   const entityIconRender = entityIcon && (
     <div className={clsx(iconBaseClasses, iconVariants[entityIcon.color])}>
-      <entityIcon.icon className="w-6 h-6 mt-1 flex-shrink-0" aria-hidden="true" />
+      <entityIcon.icon className="w-6 h-6" aria-hidden="true" />
     </div>
   );
 
@@ -39,7 +39,7 @@ export default function EntityItem({ item, entityIcon, category, buttons = [] })
 
   const entityDescriptionRender =  (<p className="text-sm text-gray-600 max-w-xl">{description}</p>);
 
-  const entityNameRender = (<h3 className="text-lg font-semibold text-gray-900">{name}</h3>);
+  const entityNameRender = (<h3 className="text-md font-medium text-gray-900">{name}</h3>);
 
   const buttonsRender = buttons && (
     buttons.map((button, index) => (
@@ -48,14 +48,14 @@ export default function EntityItem({ item, entityIcon, category, buttons = [] })
   );
 
   return (
-    <div className="p-4 border-b border-gray-200 hover:bg-gray-50">
+    <div className="p-4 mb-1 border bg-white border-gray-200 hover:bg-gray-50">
       <div className="grid md:grid-cols-[1fr_auto] gap-4 items-start">
         {/* LEFT SIDE: icon, text, badge, description */}
         <div className="flex items-start gap-3">
           { entityIconRender }
           <div className="flex-1">
 
-            <div className="flex items-center flex-wrap gap-2">
+            <div className="flex items-center flex-wrap gap-2 mb-2">
               { entityNameRender }
               { categoryBadgeRender }
             </div>
@@ -70,7 +70,7 @@ export default function EntityItem({ item, entityIcon, category, buttons = [] })
         </div>
 
         {/* RIGHT SIDE BUTTONS (only visible on md+) */}
-        <div className="hidden md:flex items-end justify-end gap-2 self-end">
+        <div className="hidden md:flex items-center justify-end gap-2">
           { buttonsRender }
         </div>
       </div>

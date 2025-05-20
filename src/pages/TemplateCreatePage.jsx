@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Editor from "@monaco-editor/react";
 import { ArrowRight, X } from "lucide-react";
 
+import Breadcrumbs from "../components/Breadcrumbs";
 import MilestoneTracker from "../components/MilestoneTracker";
 import SplitPanel from "../components/SplitPanel";
 import ActionButton from "../components/ActionButton";
@@ -40,7 +41,7 @@ export default function TemplateCreatePage() {
   const [showModal, setShowModal] = useState(false);
   const [previewedTemplate, setPreviewedTemplate] = useState(null);
 
-  // ref for automatic scrolling and json content updating
+  // ref for json content updating
   const editorValue = useRef(exampleStructure);
 
   // documentation handling
@@ -63,15 +64,6 @@ export default function TemplateCreatePage() {
 
   const navigate = useNavigate();
 
-
-  function scrollTo(sectionId) {
-    // Wait for section to render, then scroll automatically to it
-    setTimeout(() => {
-      const el = document.getElementById(sectionId);
-      el?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 50)
-  }
-
   // Details form handling
   function validateDetailsData() {
     if (!template.name.trim()) {
@@ -93,7 +85,6 @@ export default function TemplateCreatePage() {
     const isDataValid = validateDetailsData();
     if (isDataValid) {
       setMilestoneStep(1);
-      scrollTo("snippet-section");
     }
   }
 
@@ -168,7 +159,6 @@ export default function TemplateCreatePage() {
     setTemplate((prev) => {
       return { ...prev, structure: snippet.structure};
     });
-    scrollTo("snippet-editor");
   }
 
   function handleSnippetPreview(snippet) {
@@ -239,8 +229,6 @@ export default function TemplateCreatePage() {
         }
       });
       setMilestoneStep(2);
-      scrollTo("documentation-section");
-      scrollTo("documentation-preview-section");
     } else {
       setJsonError("The JSON syntax is invalid, it needs to be fixed to proceed with the next step of the template creation.");
     }
@@ -318,7 +306,6 @@ export default function TemplateCreatePage() {
               <ActionButton 
                 onClick={()=>{
                   setHasPickedSnippet(true);
-                  scrollTo("snippet-editor");
                 }} 
                 variant="secondary" 
                 label="Use default snippet" />
@@ -489,39 +476,37 @@ export default function TemplateCreatePage() {
   );
 
   return (
-    <div className="bg-white max-w-6xl mx-auto rounded-lg h-[100vh]">
+    <div className="bg-white w-full h-full rounded-lg">
       <SplitPanel 
         left={
-          <div className="h-[90vh] my-14 pl-10 overflow-y-auto pr-8 scroll-smooth">
-            <div id="details-section" className={`${milestoneStep == 0 ? "h-full" : ""}`}>
+          <div className="pt-8 pl-10 pr-8 overflow-y-auto">
+            <Breadcrumbs items={[{ label: "Templates", to: "/templates" }, { label: "New", to: "/templates/new" }, { label: "Create", to: "/templates/new/create" }]} />
+
+            {
+              milestoneStep === 0 ? (
+              <div className="mt-5 h-full">
                 {renderDetailsForm}
-                <hr className="text-gray-200 my-4" />
-            </div>
-            <div id="snippet-section" className={`py-6 ${milestoneStep == 1 ? "h-full" : ""}`}>
-              {
-                milestoneStep > 0 && (
-                  <>
+              </div> )
+              : milestoneStep === 1 ? (
+                <div className="py-6 mt-5 h-full">
                     {renderCodeEditor}
-                    <hr className="text-gray-200 my-4" />
-                  </>
-                  )
-                }
-            </div>
-            <div id="documentation-section" className="h-full">
-              {
-                milestoneStep > 1 && 
-                renderDocumentationEditor
-              }
-            </div>
+                </div>)
+              : (
+                <div className="mt-5 h-full">
+                  { renderDocumentationEditor }
+                </div>
+              )
+            } 
           </div>
           }
         right={
-          <div className="rounded-r-lg bg-gray-100 h-[100vh] py-10">
-            <div className="mx-auto pt-4 pb-8 px-8 items-center">
+          <div className="rounded-r-lg bg-gray-100 h-full p-10">
+
+            <div className="pt-4 pb-8 items-center">
               <MilestoneTracker milestones={["Description", "Code", "Documentation"]} currentStep={milestoneStep}/>
             </div>
 
-            <div className="max-h-[75vh] overflow-y-auto rounded-md mx-10 py-4 px-8 bg-white">
+            <div className="py-4 px-8 overflow-y-auto h-5/6 rounded-md border-1 border-gray-200 bg-white">
               <h2 className="text-sm text-blue-800 uppercase tracking-widest">Preview</h2>
                 {renderTemplateDetails}
                 {milestoneStep > 0 && hasPickedSnippet && renderTemplateSnippet}

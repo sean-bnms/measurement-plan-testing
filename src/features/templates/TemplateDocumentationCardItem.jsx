@@ -43,7 +43,7 @@ export default function TemplateDocumentationCardItem({ itemMetadata, path }) {
                         {
                             itemMetadata.options.map((option) => {
                                 return (
-                                    <span key={`${option}`} className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded m-1">
+                                    <span key={`${option}`} className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded mr-1">
                                         {option}
                                     </span>
                                     );

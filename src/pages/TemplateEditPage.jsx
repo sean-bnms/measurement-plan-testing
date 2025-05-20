@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 
 import TemplateEditor from "../features/templates/TemplateEditor";
-import PageReturnLinkHeader from "../layout/PageReturnLinkHeader";
 import TemplateDocumentationCollapsible from "../features/templates/TemplateDocumentationCollapsible";
 import FadingAlert from "../components/FadingAlert";
 import EntityPageHeader from "../components/EntityPageHeader";
@@ -87,32 +86,30 @@ export default function TemplateEditPage() {
     );
   
     return (
-        <div className="p-4 max-w-4xl mx-auto">
-            <PageReturnLinkHeader linkLabel="Back to template" backTo={templateItemPath}>
-                {
-                    template === null ? 
-                    (
-                        <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
-                            {renderLoadingContent}
-                        </div>
-                    )
-                    : (
-                    <>
-                        <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
-                            {renderEditingContent}
-                        </div>
-                        <Modal 
-                            isOpen={showConfirmationModal}
-                            title="Confirm deletion"
-                            confirmBtn={{ variant:"danger", onClick: () => handleDelete(), label:"Confirm"}}
-                            cancelBtn={{ variant:"ghost", onClick: () => setShowConfirmationModal(false), label:"Cancel"}}
-                            >
-                            <p className="text-sm text-gray-600 mb-4">Are you sure you want to delete this template?</p>
-                        </Modal>
-                    </>
-                    )
+        <div className="bg-white p-8 w-full h-full rounded-lg">
+            {
+                template === null ? 
+                (
+                    <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
+                        {renderLoadingContent}
+                    </div>
+                )
+                : (
+                <>
+                    <div className="bg-white p-8 max-w-6xl mx-auto rounded-lg">
+                        {renderEditingContent}
+                    </div>
+                    <Modal 
+                        isOpen={showConfirmationModal}
+                        title="Confirm deletion"
+                        confirmBtn={{ variant:"danger", onClick: () => handleDelete(), label:"Confirm"}}
+                        cancelBtn={{ variant:"ghost", onClick: () => setShowConfirmationModal(false), label:"Cancel"}}
+                        >
+                        <p className="text-sm text-gray-600 mb-4">Are you sure you want to delete this template?</p>
+                    </Modal>
+                </>
+                )
             }
-            </PageReturnLinkHeader>
         </div>
         );
 }

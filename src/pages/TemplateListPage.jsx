@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import { FileText } from "lucide-react";
 
 import EntityListPage from "../layout/EntityListPage";
-import TemplateSidePanel from "../features/templates/TemplateSidePanel";
 
-import { getTemplates, deleteTemplate } from "../utils/TemplateStore";
+import { getTemplates } from "../utils/TemplateStore";
 
 export default function TemplateListPage () {
     const [templates, setTemplates] = useState([]);
@@ -13,11 +12,6 @@ export default function TemplateListPage () {
         const templates = getTemplates();
         setTemplates(templates);
     }, []);
-
-    function onDelete(id) {
-        deleteTemplate(id);
-        setTemplates((prev) => prev.filter((e) => e.id !== id));
-    };
 
     const templateRoutingParams = {
         name: "Template",
@@ -36,7 +30,10 @@ export default function TemplateListPage () {
             entityDescription={"Templates let you define analytics tracking snipets which can be used across the customer journeys. Find a template close to your use case, or create it from scratch!"}
             entityIcon={{icon: FileText, color: "blue"}}
         >
-            <TemplateSidePanel />
+            <div className="flex flex-col bg-gray-50 border border-gray-200 h-80 p-4 rounded-md gap-2">
+                <div className="bg-white border border-gray-200 h-1/2 p-4 rounded-md " />
+                <div className="bg-white border border-gray-200 h-1/2 p-4 rounded-md " />
+            </div>
         </EntityListPage>
 
     );

@@ -51,7 +51,7 @@ export default function TemplateDocumentationTreeItem({ item, onClick, selection
                         {
                             item.metadata.type !== null && item.metadata.type !== undefined ? 
                             <Badge variant={item.metadata.type === "unknown" ? "warning" : "gray"} label={item.metadata.type} /> 
-                            : <Badge variant={"warning"} label={"unkown"} />
+                            : <Badge variant={"warning"} label={"unknown"} />
                         }
                     </div>
                 </div>
