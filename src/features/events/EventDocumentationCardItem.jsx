@@ -1,6 +1,6 @@
 import Badge from '../../components/Badge';
 
-export default function TemplateDocumentationCardItem({ itemMetadata, path }) {
+export default function EventDocumentationCardItem({ itemMetadata, path }) {
 
     function renderRequired(isRequired){
         return (

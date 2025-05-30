@@ -42,7 +42,7 @@ export default function Modal({
       <div className="fixed inset-0 z-50 backdrop-blur-sm bg-gray-900/10 flex items-center justify-center">
         <div className={`bg-white py-6 px-10 rounded shadow-lg z-60 pointer-events-auto w-full ${maxWidthClass} max-h-lg`}>
           <div className="flex items-start justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 my-4">{title}</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
             {closeButton && <closeButton.Component {...closeButton.props} />}
           </div>
           {description && <p className="text-md text-gray-600 mb-6">{description}</p>}

@@ -1,6 +1,6 @@
-const TEMPLATES_STORAGE_KEY = "templates";
+const EVENTS_STORAGE_KEY = "templates";
 const JOURNEYS_STORAGE_KEY = "journeys";
-const STEPS_STORAGE_KEY = "steps";
+const PROPERTIES_STORAGE_KEY = "properties";
 
 /**
  * Fetch all saved items from localStorage, under the storage key.
@@ -83,36 +83,36 @@ export function deleteItem(id, storageKey, itemType) {
 // Templates logic
 
 /**
- * Fetch all saved templates from localStorage.
- * @returns {Array} Array of templates
+ * Fetch all saved events from localStorage.
+ * @returns {Array} Array of events
  */
-export function getTemplates() {
-    return getItems(TEMPLATES_STORAGE_KEY, "templates");
+export function getEvents() {
+    return getItems(EVENTS_STORAGE_KEY, "events");
 }
 
 /**
- * Fetch templates from localStorage, by id.
- * @returns {object} template fetched
+ * Fetch events from localStorage, by id.
+ * @returns {object} event fetched
  */
-export function getTemplate(id) {
-    return getItem(id, TEMPLATES_STORAGE_KEY, "template");
+export function getEvent(id) {
+    return getItem(id, EVENTS_STORAGE_KEY, "event");
 }
 
 /**
- * Save a new template to localStorage.
+ * Save a new event to localStorage.
  * If a template with the same ID exists, it will be overwritten.
- * @param {Object} template
+ * @param {Object} event
  */
-export function saveTemplate(template) {
-    saveItem(template, TEMPLATES_STORAGE_KEY, "template");
+export function saveEvent(event) {
+    saveItem(event, EVENTS_STORAGE_KEY, "event");
 }
 
 /**
- * Delete a template by its ID.
+ * Delete a event by its ID.
  * @param {string} id
  */
-export function deleteTemplate(id) {
-    deleteItem(id, TEMPLATES_STORAGE_KEY, "template");
+export function deleteEvent(id) {
+    deleteItem(id, EVENTS_STORAGE_KEY, "event");
 }
 
 
@@ -131,8 +131,7 @@ export function getJourneys() {
  * @returns {object} journey fetched
  */
 export function getJourney(id) {
-    const cleanId = Number(id); //temporary, as we use datetimes for the key while having local storage implementation
-    return getItem(cleanId, JOURNEYS_STORAGE_KEY, "journey");
+    return getItem(id, JOURNEYS_STORAGE_KEY, "journey");
 }
 
 /**
@@ -149,43 +148,40 @@ export function saveJourney(journey) {
  * @param {string} id
  */
 export function deleteJourney(id) {
-    const cleanId = Number(id); //temporary, as we use datetimes for the key while having local storage implementation
-    deleteItem(cleanId, JOURNEYS_STORAGE_KEY, "step");
+    deleteItem(id, JOURNEYS_STORAGE_KEY, "journey");
 }
 
 // Steps logic
 
 /**
- * Fetch all saved steps from localStorage.
- * @returns {Array} Array of steps
+ * Fetch all saved properties from localStorage.
+ * @returns {Array} Array of properties
  */
-export function getSteps() {
-    return getItems(STEPS_STORAGE_KEY, "steps");
+export function getProperties() {
+    return getItems(PROPERTIES_STORAGE_KEY, "properties");
 }
 
 /**
- * Fetch steps from localStorage, by id.
- * @returns {object} step fetched
+ * Fetch properties from localStorage, by id.
+ * @returns {object} property fetched
  */
-export function getStep(id) { 
-    const cleanId = Number(id); //temporary, as we use datetimes for the key while having local storage implementation
-    return getItem(cleanId, STEPS_STORAGE_KEY, "step");
+export function getProperty(id) { 
+    return getItem(id, PROPERTIES_STORAGE_KEY, "property");
 }
 
 /**
- * Save a new step to localStorage.
- * If a template with the same ID exists, it will be overwritten.
- * @param {Object} step
+ * Save a new property to localStorage.
+ * If a property with the same ID exists, it will be overwritten.
+ * @param {Object} property
  */
-export function saveStep(step) {
-    saveItem(step, STEPS_STORAGE_KEY, "step");
+export function saveProperty(step) {
+    saveItem(step, PROPERTIES_STORAGE_KEY, "property");
 }
 
 /**
  * Delete a step by its ID.
  * @param {string} id
  */
-export function deleteStep(id) {
-    const cleanId = Number(id); //temporary, as we use datetimes for the key while having local storage implementation
-    deleteItem(cleanId, STEPS_STORAGE_KEY, "step");
+export function deleteProperty(id) {
+    deleteItem(id, PROPERTIES_STORAGE_KEY, "property");
 }

@@ -24,9 +24,9 @@ export default function ActionButton({
   roundedCornerClass="rounded-md"
 }) {
   const sizeClasses = {
-    sm: "px-2.5 py-1.5 text-xs",
-    md: "px-4 py-2 text-sm",
-    lg: "px-5 py-2.5 text-base"
+    sm: variant === "link" || variant === "ghost" ? "pr-2.5 py-1.5 text-xs" : "px-2.5 py-1.5 text-xs",
+    md: variant === "link" || variant === "ghost" ? "pr-4 py-1.5 text-sm" : "px-4 py-2 text-sm",
+    lg: variant === "link" || variant === "ghost" ? "pr-5 py-1.5 text-base" : "px-5 py-2.5 text-base"
   };
 
   const iconSizeClasses = {

@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { SaveIcon, Plus } from "lucide-react";
 
-import { saveTemplate } from "../../utils/TemplateStore";
+import { saveEvent } from "../../utils/EntityStore";
 import { exampleTemplate, validateTemplate } from "../../utils/TemplateEdition"
 
 import ActionButton from "../../components/ActionButton";
@@ -11,19 +11,19 @@ import Alert from "../../components/Alert";
 /**
  * Provides a JSON editor for creating or editing a template.
  *
- * @typedef {object} TemplateEditorProps
+ * @typedef {object} EventEditorProps
  * @property {'create' | 'edit'} mode Determines behavior and button label
- * @property {object} [initialTemplate] Optional initial template JSON
+ * @property {object} [initialCode] Optional initial template JSON
  * @property {(template: object) => void} [onSubmit] Optional callback after successful save
  *
- * @param {TemplateEditorProps} props
+ * @param {EventEditorProps} props
  * @returns {JSX.Element}
  */
-export default function TemplateEditor({ mode = "create", initialTemplate, onSubmit }) {
+export default function EventEditor({ mode = "create", initialCode, onSubmit }) {
     const [error, setError] = useState(null);
     const [validationMessages, setValidationMessages] = useState([]);
 
-    const templateContent = initialTemplate ? JSON.stringify(initialTemplate, null, 2) : exampleTemplate; //example template is already stringified
+    const templateContent = initialCode ? JSON.stringify(initialCode, null, 2) : exampleTemplate; //example template is already stringified
     const editorValue = useRef(templateContent);
   
     function validateSchemaLive(jsonString) {
@@ -45,7 +45,7 @@ export default function TemplateEditor({ mode = "create", initialTemplate, onSub
             if (errors.length > 0) {
                 throw new Error(errors.join(" "));
             }
-            saveTemplate(parsed);
+            saveEvent(parsed);
             setError(null);
             if (onSubmit) {
                 onSubmit(parsed);
@@ -90,7 +90,7 @@ export default function TemplateEditor({ mode = "create", initialTemplate, onSub
         <ActionButton
             type="submit"
             variant="primary"
-            label={mode === "edit" ? "Save Changes" : "Create Template"}
+            label={mode === "edit" ? "Save Changes" : "Create Event"}
             Icon={mode === "edit" ? SaveIcon : Plus}
         />);
     
@@ -102,7 +102,7 @@ export default function TemplateEditor({ mode = "create", initialTemplate, onSub
 
     return (
         <form action={handleSave}>
-            <label className="block text-sm font-medium mb-1">Template JSON</label> 
+            <label className="block text-sm font-medium mb-1">Event JSON</label> 
             
             <div className="flex flex-col items-center mb-4">
                 { jsonFormatAlerts }

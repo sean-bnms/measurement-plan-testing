@@ -3,7 +3,7 @@ import { Footprints } from "lucide-react";
 
 import EntityListPage from "../layout/EntityListPage";
 
-import { getJourneys, deleteJourney } from "../utils/TemplateStore";
+import { getJourneys } from "../utils/EntityStore";
 
 export default function JourneyListPage () {
     const [journeys, setJourneys] = useState([]);
@@ -12,11 +12,6 @@ export default function JourneyListPage () {
         const journeys = getJourneys();
         setJourneys(journeys);
     }, []);
-
-    function onDelete(id) {
-        deleteJourney(id);
-        setJourneys((prev) => prev.filter((e) => e.id !== id));
-    };
 
     const journeyRoutingParams = {
         name: "Journey",
@@ -28,11 +23,13 @@ export default function JourneyListPage () {
     return (
         <EntityListPage
             entities={journeys}
-            deleteEntity={onDelete} 
             entityRoutingParams={journeyRoutingParams}  
-            searchPlaceholder="By name, e.g. 'Onboarding flow'" 
-            entityTitle="User Journeys"
-            entityDescription="Journeys let you map the main milestones of your customer journeys and define what is important for you to track. Find the journeys which matter to you, or create one from scratch!"
+            entityTitle="Journey Tracking"
+            entitySearchParams={{
+                placeholder: "By name, e.g. 'Onboarding flow'",
+                title: "Customer Journeys Library",
+                description: "Browse the exisitng Customer journeys in your organization"
+              }}
             entityIcon={{icon: Footprints, color: "green"}}
         />
     );

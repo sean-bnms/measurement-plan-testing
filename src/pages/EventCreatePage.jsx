@@ -2,9 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 
 import Editor from "@monaco-editor/react";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight, X , MousePointerClick, Eye, CircleHelp} from "lucide-react";
 
-import Breadcrumbs from "../components/Breadcrumbs";
+import PageHeader from "../components/PageHeader";
 import MilestoneTracker from "../components/MilestoneTracker";
 import SplitPanel from "../components/SplitPanel";
 import ActionButton from "../components/ActionButton";
@@ -16,21 +16,20 @@ import EntitySearch from "../components/EntitySearch";
 import EntityItem from "../components/EntityItem";
 import Modal from "../components/Modal";
 // Template preview imports
-import Badge from "../components/Badge";
 import JsonCodeBlock from "../components/JsonCodeBlock";
 // Documentation imports
-import TemplateDocumentationCardItem from "../features/templates/TemplateDocumentationCardItem";
-import TemplateDocumentationTree from "../features/templates/TemplateDocumentationTree";
+import EventDocumentationCardItem from "../features/events/EventDocumentationCardItem";
+import EventDocumentationTree from "../features/events/EventDocumentationTree";
 import Alert from "../components/Alert";
-import TemplateDocumentationItemEditor from "../features/templates/TemplateDocumentationItemEditor";
+import EventDocumentationItemEditor from "../features/events/EventDocumentationItemEditor";
 
 import { exampleStructure } from "../utils/TemplateEdition";
-import { getTemplates, saveTemplate } from "../utils/TemplateStore";
+import { getEvents, saveEvent } from "../utils/EntityStore";
 import {flattenStructure, extractStructureDataTypes, buildStructureTree, flattenTree}  from '../utils/TemplateTree';
 
 
 
-export default function TemplateCreatePage() {
+export default function EventCreatePage() {
   const [template, setTemplate] = useState({name: "", description: "", category: { label: "", color: ""}, structure: JSON.parse(exampleStructure), fieldsMetadata: {}});
   const [milestoneStep, setMilestoneStep] = useState(0);
   
@@ -45,7 +44,7 @@ export default function TemplateCreatePage() {
   const editorValue = useRef(exampleStructure);
 
   // documentation handling
-  const [selectedItem, setSelecteditem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   // handling required fields error messages
   const [nameError, setNameError] = useState(null);
@@ -54,7 +53,7 @@ export default function TemplateCreatePage() {
   const [attributeDescriptionError, setAttributeDescriptionError] = useState(null);
 
   useEffect(()=>{
-    const templates = getTemplates();
+    const templates = getEvents();
     const snippets = templates.map((template) => {
       return {id: template.id, name: template.name, description: template.description, category: template.category, structure: template.structure}
     });
@@ -92,7 +91,7 @@ export default function TemplateCreatePage() {
   const renderTemplateSearch = (
     <>
       <EntitySearch 
-        title="Search Template Library"
+        title=""
         placeholder="Search by name..."
         onSearch={handleSearch}
       />
@@ -105,11 +104,11 @@ export default function TemplateCreatePage() {
               buttons={[
                 { 
                   Component: ActionButton, 
-                  props: { onClick: () => handleSnippetPreview(snippet), label: "Preview", variant: "link", iconOnly: false}
+                  props: { onClick: () => handleSnippetPreview(snippet), label: "Preview", variant: "ghost", iconOnly: false, Icon: Eye}
                 },
                 { 
                   Component: ActionButton, 
-                  props: { onClick: () => handleSnippetSelection(snippet), label: "Pick", variant: "primary", iconOnly: false}
+                  props: { onClick: () => handleSnippetSelection(snippet), label: "Select", variant: "link", iconOnly: false, Icon: MousePointerClick}
                 }
               ]}
               category={snippet.category}
@@ -123,7 +122,7 @@ export default function TemplateCreatePage() {
   const renderTemplateSearchModal = (
     <Modal
       isOpen={showModal}
-      title="Pick a template"
+      title=""
       maxWidthClass="max-w-3xl"
       closeButton={
         {
@@ -132,16 +131,11 @@ export default function TemplateCreatePage() {
         }
       }
     >
-    {<>
-      {renderTemplateSearch}
-      {previewedTemplate && (
-        <div className="bg-gray-50 p-6 rounded-md">
-          <h2 className="text-sm text-blue-800 uppercase tracking-widest">Preview</h2>
-          <h3 className="text-lg text-gray-900 font-semibold mt-2 mb-4">{previewedTemplate.name}</h3>
-          <p className="text-sm text-gray-600 mt-2 mb-4">{previewedTemplate.description}</p>
-          <JsonCodeBlock json={previewedTemplate.structure} />
-        </div>
-        )}
+    {previewedTemplate && <>
+      <h2 className="text-sm text-blue-800 uppercase tracking-widest">Preview</h2>
+      <h3 className="text-lg text-gray-900 font-semibold mt-2 mb-4">{previewedTemplate.name}</h3>
+      <p className="text-sm text-gray-600 mt-2 mb-4">{previewedTemplate.description}</p>
+      <JsonCodeBlock json={previewedTemplate.structure} />
     </>
     }
     </Modal>
@@ -154,21 +148,23 @@ export default function TemplateCreatePage() {
   }
 
   function handleSnippetSelection(snippet) {
-    setShowModal(false);
     setHasPickedSnippet(true);
     setTemplate((prev) => {
       return { ...prev, structure: snippet.structure};
     });
+    // updates default value for the json editor
+    editorValue.current = JSON.stringify(snippet.structure, null, 2);
   }
 
   function handleSnippetPreview(snippet) {
+    setShowModal(true);
     setPreviewedTemplate(snippet);
   }
 
   // Code snippet handling - Editor handling
   const jsonEditor =  (
     <Editor
-      height="400px"
+      height="300px"
       defaultLanguage="json"
       defaultValue={editorValue.current}
       theme="vs"
@@ -239,8 +235,6 @@ export default function TemplateCreatePage() {
   // Details Form
   const renderDetailsForm = (
     <>
-      <h2 className="text-2xl font-semibold mb-4">Template Details</h2>
-      <p className="mb-6 text-md text-gray-700">Describe the purpose of the template and add meaningful categories to help colleagues find it easily.</p>
       <div className="flex flex-col gap-2 my-4">
         <Input 
           label="Name"
@@ -254,6 +248,16 @@ export default function TemplateCreatePage() {
           ariaLabel="Name given to the template created"
           error={nameError}
         /> 
+        <Input 
+          label="Category"
+          placeholder="e.g. Ecommerce"
+          type="text"
+          value={Object.keys(template.category).length === 0 && template.category.constructor === Object ? "" : template.category.label}
+          onChange={(e) => setTemplate((prev) => {
+            return { ...prev, category: { "label": e.target.value, "color": "blue"} };
+          })}
+          ariaLabel="Category of template"
+        /> 
         <Textarea
           label="Description"
           value={template.description}
@@ -265,27 +269,12 @@ export default function TemplateCreatePage() {
           ariaLabel="Description of when to use the template"
           error={descriptionError}
         />
-        <Input 
-          label="Category"
-          placeholder="e.g. Ecommerce"
-          type="text"
-          value={Object.keys(template.category).length === 0 && template.category.constructor === Object ? "" : template.category.label}
-          onChange={(e) => setTemplate((prev) => {
-            return { ...prev, category: { "label": e.target.value, "color": "blue"} };
-          })}
-          ariaLabel="Category of template"
-        /> 
       </div>
-      <div className="flex space-x-3 justify-end">
+      <div className="flex space-x-3 justify-end mb-4">
         {
           milestoneStep === 0 ? 
-          (
-            <ActionButton 
-              onClick={handleSubmitDetails}
-              variant="primary" 
-              label="Next" 
-              Icon={ArrowRight} />
-          ) : null
+          <ActionButton onClick={handleSubmitDetails} variant="primary" label="Next" Icon={ArrowRight} /> 
+          : null
         }
       </div>
     </>
@@ -294,38 +283,44 @@ export default function TemplateCreatePage() {
   // Tracking snippet
   const renderCodeEditor = (
     <>
-      <h2 className="text-2xl font-semibold mb-4">Tracking Snippet</h2>
-      <p className="mb-6 text-md text-gray-700">Define the JSON snippet used to measure the interaction tracked with this template.</p>
       {
         // option to start from default template or company template
         !hasPickedSnippet && snippets.length > 0 ? (
           <>
-            <h3 className="text-lg text-gray-700 font-medium mb-2">Select starting snippet</h3>
-            <p className="mb-6 text-sm text-gray-700">Browse your company's existing templates to find a snippet close to your new use case, or starts with the default snippet structure.</p>
-            <div className="flex space-x-3 justify-start mt-8">
+            <h3 className="text-lg text-gray-700 font-medium mb-2">Start from an existing snippet</h3>
+            <p className="mb-3 text-sm text-gray-700">Browse your company's existing templates to find a snippet close to your new use case, or create one from scratch.</p>
+            
+            <div className="flex gap-3 justify-start mb-2">
               <ActionButton 
-                onClick={()=>{
-                  setHasPickedSnippet(true);
-                }} 
-                variant="secondary" 
-                label="Use default snippet" />
-              <ActionButton onClick={()=>setShowModal(true)} variant="primary" label="Pick a snippet" />
+                onClick={()=> setHasPickedSnippet(true)} 
+                variant="link" 
+                label="Use default snippet"
+                Icon={ArrowRight} />
             </div>
+
+            <div className="bg-white px-6 py-4 rounded-md border-1 border-gray-200">
+              {renderTemplateSearch}
+            </div>
+
             {renderTemplateSearchModal}
           </>
         ) : (
           <>
-            <h3 id="snippet-editor" className="text-lg text-gray-700 font-medium mb-2">Edit snippet</h3>
-            <p className="mb-6 text-sm text-gray-700">Use <code className="bg-blue-50 p-1 rounded-sm">{`{{placeholder}}`}</code> to indicate a placeholder value for some fields. In the documentation step, you will be able to define whether these fields should be optional, the values they can take and the data type expected. You can also provide directly the value if it is intended to remain the same in all situations.</p>
-            <p className="mb-6 text-sm text-gray-700">When creating an <code className="bg-blue-50 p-1 rounded-sm">array</code>, only fill the first instance (e.g. if you have an array of prices, just fill <code className="bg-gray-50 rounded-sm test-sm">{`"prices": [{{price}}]`}</code>)</p>
-            <div className={`w-full border-1 ${jsonError ? "border-red-500" : "border-gray-300"} rounded overflow-hidden max-w-3xl`}>{jsonEditor}</div>
+            <h3 className="text-lg text-gray-700 font-medium mb-6">Edit snippet</h3>
+            <div className={`w-full border-1 ${jsonError ? "border-red-500" : "border-gray-300"} rounded max-w-3xl`}>
+              {jsonEditor}
+            </div>
             {jsonError && (
               <p className="text-sm text-red-500 mt-1">
                 {jsonError}
               </p>
             )}
-            <div className="flex space-x-3 justify-end mt-4">
-              {milestoneStep === 1 ? <ActionButton onClick={handleSubmitCode} variant="primary" label="Next" Icon={ArrowRight} /> : null}
+            <div className="flex space-x-3 justify-end mt-6 mb-4">
+              {
+                milestoneStep === 1 ? 
+                <ActionButton onClick={handleSubmitCode} variant="primary" label="Next" Icon={ArrowRight} /> 
+                : null
+              }
             </div>
           </>
         )
@@ -337,18 +332,18 @@ export default function TemplateCreatePage() {
   const renderDocumentationTree = (
     <>
       <h2 className="text-md font-semibold text-gray-900 mb-4">Attributes Tree</h2>
-      <TemplateDocumentationTree templateMetadata={template.fieldsMetadata} onItemSelection={getSelectedDocumentationItem} />
+      <EventDocumentationTree metadata={template.fieldsMetadata} onItemSelection={getSelectedDocumentationItem} />
     </>
   );
 
   function getSelectedDocumentationItem(item) {
-    setSelecteditem(item);
+    setSelectedItem(item);
   };
 
   const renderDocumentationItemEditor = (
     selectedItem ?
     <> 
-      <TemplateDocumentationItemEditor 
+      <EventDocumentationItemEditor 
         itemMetadata={template.fieldsMetadata[selectedItem.path]}
         itemPath={selectedItem.path}
         onToggle={() => setTemplate(prev => {
@@ -420,8 +415,8 @@ export default function TemplateCreatePage() {
   );
 
   function onSave() {
-    saveTemplate(template);
-    navigate("/templates");
+    saveEvent(template);
+    navigate("/events");
   }
   
   const renderDocumentationEditor = (
@@ -432,7 +427,7 @@ export default function TemplateCreatePage() {
       <div className="bg-gray-50 border-1 border-gray-200 rounded-md p-4">
         {renderDocumentationItemEditor}
       </div>
-      <div className="flex space-x-3 justify-end mt-4">
+      <div className="flex space-x-3 justify-end mt-4 pb-6">
         <ActionButton 
           onClick={()=> onSave()}
           variant="primary" 
@@ -442,30 +437,13 @@ export default function TemplateCreatePage() {
   );
 
   // Template Preview
-  const renderTemplateDetails = ( 
-    <>
-      <div className="flex items-center gap-2 flex-wrap mt-5">
-        <h1 className="text-xl font-bold text-gray-900">{template.name}</h1>
-        { template.category.label !== "" ? <Badge label={template.category.label} variant={template.category.color} /> : null}
-      </div>
-      <p className="text-sm text-gray-700 mt-2 mb-4">{template.description}</p>
-    </>
-  );
-
-  const renderTemplateSnippet = (
-    <>
-      <h2 className="text-md font-semibold text-gray-900">Tracking snippet</h2>
-      <JsonCodeBlock json={template.structure} />
-    </>
-  );
-
   const renderTemplateDocumentation = (
     <>
       <h2 className="text-md font-semibold text-gray-900">Attribute item preview</h2>
       <div className='bg-gray-100 rounded-md p-4 my-4 min-h-10'>
         {
             selectedItem && template.fieldsMetadata[selectedItem.path] ?
-            <TemplateDocumentationCardItem 
+            <EventDocumentationCardItem 
                 itemMetadata={template.fieldsMetadata[selectedItem.path]} 
                 path={selectedItem.path}
             />
@@ -476,49 +454,75 @@ export default function TemplateCreatePage() {
   );
 
   return (
-    <div className="bg-white w-full h-full rounded-lg">
-      <SplitPanel 
-        left={
-          <div className="pt-8 pl-10 pr-8 overflow-y-auto">
-            <Breadcrumbs items={[{ label: "Templates", to: "/templates" }, { label: "New", to: "/templates/new" }, { label: "Create", to: "/templates/new/create" }]} />
-
-            {
-              milestoneStep === 0 ? (
-              <div className="mt-5 h-full">
-                {renderDetailsForm}
-              </div> )
-              : milestoneStep === 1 ? (
-                <div className="py-6 mt-5 h-full">
+    <>
+      <div className="sticky top-0 z-20 bg-white px-8 py-6 w-full border-b-2 border-gray-300 h-32">
+        <PageHeader 
+          title="Event Creation"
+          breadcrumbs={[{ label: "Events", to: "/events" }, { label: "New", to: "/events/new" }]}
+        >
+          <div className="pt-4 pb-6 w-xl">
+            <MilestoneTracker milestones={["Description", "Code", "Documentation"]} currentStep={milestoneStep}/>
+          </div>
+        </PageHeader>
+      </div>
+  
+      <div className="m-6 max-h-[calc(100vh-8rem)] overflow-y-auto bg-white rounded-lg">
+        <SplitPanel 
+          left={
+            <div className="pt-10 pl-10">
+              {
+                milestoneStep === 0 ? (
+                  <div className="mt-5">
+                    <h2 className="text-xl font-semibold mb-2">Events Details</h2>
+                    <p className="text-base text-gray-500">Describe the purpose of the template and add meaningful categories to help colleagues find it easily.</p>
+                  </div> )
+                : milestoneStep === 1 ? (
+                  <div className="mt-5">
+                    <h2 className="text-xl font-semibold mb-2">Tracking Snippet</h2>
+                    <p className="text-base text-gray-500 mb-10">Define the JSON snippet used to measure the interaction tracked with this event.</p>
+                    {
+                      hasPickedSnippet &&
+                      <div className="bg-blue-50 border-1 border-blue-100 px-6 pt-4 pb-8 rounded-sm">
+                        <div className="flex items-center gap-2 mb-4">
+                          < CircleHelp size={24} className="text-blue-800" aria-hidden={true} />
+                          <h3 className="text-md text-blue-800 font-semibold">Filling the snippet</h3>
+                        </div>
+                      
+                        <p className="mb-6 text-sm text-gray-900">Use <code className="bg-blue-300 p-1 rounded-sm text-white text-xs">{`{{placeholder}}`}</code> to indicate a placeholder value for some fields. In the documentation step, you will be able to define whether these fields should be optional, the values they can take and the data type expected. You can also provide directly the value if it is intended to remain the same in all situations.</p>
+                        <p className="text-sm text-gray-900">When creating an <code className="bg-blue-300 p-1 rounded-sm text-white text-xs">array</code>, only fill the first instance (e.g. if you have an array of prices, just fill <code className="bg-blue-300 p-1 rounded-sm text-white text-xs">{`"prices": [{{price}}]`}</code>)</p>
+                      </div>
+                    }
+                  </div>)
+                : (
+                  <div className="mt-5">
+                    { renderDocumentationEditor }
+                  </div>
+                )
+              } 
+            </div>
+            }
+          right={
+            <div className="rounded-r-lg p-10 overflow-y-auto">
+              {
+                milestoneStep === 0 ?
+                (
+                  <div className="mx-2 mt-4 py-4 px-8 bg-gray-50 border-1 border-gray-300 rounded-lg">
+                    {renderDetailsForm}
+                  </div>
+                ) : milestoneStep === 1 ? (
+                  <div className="mx-2 mt-4 py-4 px-8 bg-gray-50 border-1 border-gray-300 rounded-lg">
                     {renderCodeEditor}
-                </div>)
-              : (
-                <div className="mt-5 h-full">
-                  { renderDocumentationEditor }
-                </div>
-              )
-            } 
-          </div>
+                  </div>
+                ) : null
+              }
+              {/* <div className="py-4 px-8 overflow-y-auto h-5/6 rounded-md border-1 border-gray-200 bg-white"> */}
+              {milestoneStep > 1 && renderTemplateDocumentation}
+            </div>
           }
-        right={
-          <div className="rounded-r-lg bg-gray-100 h-full p-10">
-
-            <div className="pt-4 pb-8 items-center">
-              <MilestoneTracker milestones={["Description", "Code", "Documentation"]} currentStep={milestoneStep}/>
-            </div>
-
-            <div className="py-4 px-8 overflow-y-auto h-5/6 rounded-md border-1 border-gray-200 bg-white">
-              <h2 className="text-sm text-blue-800 uppercase tracking-widest">Preview</h2>
-                {renderTemplateDetails}
-                {milestoneStep > 0 && hasPickedSnippet && renderTemplateSnippet}
-                <div id="documentation-preview-section" className="">
-                  {milestoneStep > 1 && renderTemplateDocumentation}
-                </div>
-            </div>
-          </div>
-        }
-        templateKey={"1fr_1fr"}  
-        gap={"gap-5"}   
-      />
-    </div>
+          templateKey={"1fr_2fr"}  
+          gap={"gap-2"}   
+        />
+      </div>
+    </>
   );
 }

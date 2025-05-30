@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Pencil, Trash2 } from "lucide-react";
 
 import EntityDeletionModal from "../components/EntityDeletionModal";
-import EntityPageHeader from "../components/EntityPageHeader";
+import PageHeader from "../components/PageHeader";
 import NavigationButton from "../components/NavigationButton";
 import ActionButton from "../components/ActionButton";
 
@@ -27,7 +27,6 @@ import ActionButton from "../components/ActionButton";
  * @param {string} props.entityRoutingParams.collectionName - Collection label (e.g., "Templates").
  * @param {Object} props.entityHeaderParams - Routing and metadata config for the entity.
  * @param {string} props.entityHeaderParams.name - The entity item name (e.g., "Product Added").
- * @param {string} [props.entityHeaderParams.description] - The entity item description (e.g., "Triggered when a product is added to the cart online").
  * @param {string} [props.entityHeaderParams.category] - The entity item category
  * @param {string} props.children - Additional content for the page, to come below the page header
  */
@@ -47,20 +46,34 @@ export default function EntityViewPage({ id, deleteEntityById, entityRoutingPara
     navigate(entityRoutingParams.path, { replace: true });
   }
 
+  const actions = [
+    {Component: NavigationButton, props: {navigateTo: `${entityPath}/edit`, label: "Edit", Icon: Pencil, variant: "primary"}},
+    {Component: ActionButton, props: {onClick: handleDeleteRequest, label: "Delete", Icon: Trash2, variant: "danger"}}
+  ];
+
+  const renderActions = (
+    actions.length > 0 && (
+      <div className="flex-shrink-0 flex gap-2" aria-label="Header actions">
+        {actions.map((action, i) => (
+          <action.Component key={i} {...action.props} />
+        ))}
+      </div>
+    )
+  );
+
   return (
     <>
       <div className={`relative ${showConfirmationModal ? 'pointer-events-none blur-sm' : ''}`}>
-        <div className="bg-white p-8 w-full h-full rounded-lg">
-          <EntityPageHeader 
+        <div className="sticky top-0 z-20 bg-white px-8 py-6 w-full border-b-2 border-gray-300 h-32">
+          <PageHeader 
               title={entityHeaderParams.name}
-              description={entityHeaderParams.description}
               breadcrumbs={[{ label: entityRoutingParams.collectionName, to: entityRoutingParams.path }, { label: "Details", to: entityPath }]}
               badges={entityHeaderParams.category ? [{label: entityHeaderParams.category.label, variant: entityHeaderParams.category.color}] : null}
-              actions={[
-                  {Component: NavigationButton, props: {navigateTo: `${entityPath}/edit`, label: "Edit", Icon: Pencil, variant: "primary"}},
-                  {Component: ActionButton, props: {onClick: handleDeleteRequest, label: "Delete", Icon: Trash2, variant: "danger"}}
-              ]}
-          />
+          >
+            {renderActions}
+          </PageHeader>
+        </div>
+        <div className="max-h-[calc(100vh-8rem)] overflow-y-auto bg-white p-8">
           {children ? children : null}
         </div>
       </div>

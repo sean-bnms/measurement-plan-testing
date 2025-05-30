@@ -1,30 +1,33 @@
 import { useMemo, useState, useEffect } from 'react';
 
-import TemplateDocumentationTreeItem from './TemplateDocumentationTreeItem';
+import EventDocumentationTreeItem from './EventDocumentationTreeItem';
 import {buildStructureTreeFromMetadata, flattenTree}  from '../../utils/TemplateTree';
 
 /**
  * Displays the meatadata documentation for the template snippet.
  *
  * @property {object} props
- * @property {object} props.templateStructure Contains the Analytics JSON snippet of the template
  * @property {function} [props.onItemSelection] Callback to share the selected items info with other components
- * @property {string} [props.templateMetadata] Object representating the metadata
+ * @property {string} [props.metadata] Object representating the metadata
  * @returns {JSX.Element}
  */
-export default function TemplateDocumentationTree({ templateMetadata, onItemSelection }) {
+export default function EventDocumentationTree({ metadata, onItemSelection }) {
     const [selectionMap, setSelectionMap] = useState(null); //holds the state of items selection
     const [selectedItemParents, setSelectedItemParents] = useState([]);
 
     const structureTree = useMemo(() => {
-        const tree = buildStructureTreeFromMetadata(templateMetadata);
+        const tree = buildStructureTreeFromMetadata(metadata);
         return flattenTree(tree)
-    }, [templateMetadata]);
+    }, [metadata]);
 
     // Sync the selection Map once structure tree has loaded
     useEffect(() => {
         if (structureTree) {
-            const initalMap = structureTree.map(obj => ({ path: obj.path, status: false }));
+           
+            // intialize the map with the first item selected for display
+            const initalMap = structureTree.map((obj, index) => {
+                return { path: obj.path, status: index === 0 ? true : false };
+            });
             setSelectionMap(initalMap);
         }
     }, [structureTree]);
@@ -49,12 +52,12 @@ export default function TemplateDocumentationTree({ templateMetadata, onItemSele
     if (!selectionMap) return null;
 
     return (
-        <div className='border-2 border-gray-300 rounded-md p-4 my-4 overflow-y-auto h-1/3'>
+        <div className='bg-white border-1 border-gray-300 rounded-md p-4 overflow-y-auto'>
             {
                 structureTree.map((item, index) => {
                     return (
                         item.level === 1 ? 
-                        <TemplateDocumentationTreeItem 
+                        <EventDocumentationTreeItem 
                             key={index} 
                             item={item} 
                             selectionMap={selectionMap} 

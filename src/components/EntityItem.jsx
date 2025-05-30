@@ -50,7 +50,6 @@ export default function EntityItem({ item, entityIcon, category, buttons = [] })
   return (
     <div className="p-4 mb-1 border bg-white border-gray-200 hover:bg-gray-50">
       <div className="grid md:grid-cols-[1fr_auto] gap-4 items-start">
-        {/* LEFT SIDE: icon, text, badge, description */}
         <div className="flex items-start gap-3">
           { entityIconRender }
           <div className="flex-1">
@@ -62,15 +61,10 @@ export default function EntityItem({ item, entityIcon, category, buttons = [] })
 
             { entityDescriptionRender }
 
-            {/* BUTTONS: left aligned on mobile */}
-            <div className="mt-3 flex gap-2 md:hidden">
-              { buttonsRender }
-            </div>
           </div>
         </div>
 
-        {/* RIGHT SIDE BUTTONS (only visible on md+) */}
-        <div className="hidden md:flex items-center justify-end gap-2">
+        <div className="flex flex-col items-start justify-center border-l-1 border-gray-200 pl-6">
           { buttonsRender }
         </div>
       </div>

@@ -2,7 +2,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 
 import Badge from "../../components/Badge";
 
-export default function TemplateDocumentationTreeItem({ item, onClick, selectionMap, selectedItemParents }) {
+export default function EventDocumentationTreeItem({ item, onClick, selectionMap, selectedItemParents }) {
     const hasChildren = item.children && Object.keys(item.children).length > 0;
     const isSelected = selectionMap.filter((obj) => obj.path === item.path)[0].status;
     const isParent = isSelected ? false : selectedItemParents.includes(item.path);
@@ -60,7 +60,7 @@ export default function TemplateDocumentationTreeItem({ item, onClick, selection
             {hasChildren && (isSelected || isParent) && (
                 Object.values(item.children).map((child) => {
                     const itemSelected = selectionMap.filter((obj) => obj.path === child.path)[0].status;
-                    return <TemplateDocumentationTreeItem key={child.path} item={child} onClick={handleClick} selectionMap={selectionMap} selectedItemParents={selectedItemParents} />
+                    return <EventDocumentationTreeItem key={child.path} item={child} onClick={handleClick} selectionMap={selectionMap} selectedItemParents={selectedItemParents} />
                 })
             )}
         </div>

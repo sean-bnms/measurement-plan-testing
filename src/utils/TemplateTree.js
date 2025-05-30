@@ -136,7 +136,6 @@ export function buildStructureTreeFromMetadata(metadata) {
       const key = parts[parts.length - 1];
   
       const meta = metadata[path];
-      console.log(meta);
       const node = {
         key,
         path,

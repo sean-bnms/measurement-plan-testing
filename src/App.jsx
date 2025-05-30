@@ -1,13 +1,10 @@
 import HomePage from "./pages/HomePage";
-import TemplateViewPage from "./pages/TemplateViewPage";
-import TemplateListPage from "./pages/TemplateListPage";
-import TemplateCreatePage from "./pages/TemplateCreatePage";
-import TemplateCreateNewPage from "./pages/TemplateCreateNewPage";
-import TemplateClonePage from "./pages/TemplateClonePage";
-import TemplateEditPage from "./pages/TemplateEditPage";
+import EventViewPage from "./pages/EventViewPage";
+import EventListPage from "./pages/EventListPage";
+import EventCreatePage from "./pages/EventCreatePage";
+import EventEditPage from "./pages/EventEditPage";
 import JourneyListPage from "./pages/JourneyListPage";
-import JourneyCreatePage from "./pages/JourneyCreatePage";
-import JourneyViewPage from "./pages/JourneyViewPage";
+import PropertyListPage from "./pages/PropertyListPage";
 import Layout from "./layout/Layout"
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -19,15 +16,12 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
-          <Route path="templates" element={<TemplateListPage />} />
-          <Route path="templates/new" element={<TemplateCreateNewPage />} />
-          <Route path="templates/new/create" element={<TemplateCreatePage />} />
-          <Route path="templates/new/clone/:id" element={<TemplateClonePage />} />
-          <Route path="templates/:id" element={<TemplateViewPage />} />
-          <Route path="templates/:id/edit" element={<TemplateEditPage />} />
+          <Route path="events" element={<EventListPage />} />
+          <Route path="events/new" element={<EventCreatePage />} />
+          <Route path="events/:id" element={<EventViewPage />} />
+          <Route path="events/:id/edit" element={<EventEditPage />} />
           <Route path="journeys" element={<JourneyListPage />} />
-          <Route path="journeys/new" element={<JourneyCreatePage />} />
-          <Route path="journeys/:id" element={<JourneyViewPage />} />
+          <Route path="properties" element={<PropertyListPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

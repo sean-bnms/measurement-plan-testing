@@ -1,8 +1,9 @@
 import { NavLink } from "react-router-dom";
-import { FileText, Footprints } from "lucide-react";
+import { Braces, Footprints, TableProperties } from "lucide-react";
 
 const sidebarItems = [
-  { name: "Templates", path: "/templates", Icon: FileText },
+  { name: "Events", path: "/events", Icon: Braces },
+  { name: "Tracking Properties", path: "/properties", Icon: TableProperties },
   { name: "Journey Tracking", path: "/journeys",  Icon: Footprints  },
 ];
 
@@ -10,7 +11,7 @@ export default function Sidebar() {
   // main container has top-16 as the header height is 16, which is 4 rem.
   // height is set to 100 viewport height minus the bar
   return (
-    <aside className="w-64 bg-white sticky top-16 h-[calc(100vh-4rem)]">
+    <aside className="w-64 bg-white sticky top-16 h-[calc(100vh-4rem)] border-r-2 border-gray-300">
         <nav className="flex flex-col p-4 space-y-2">
             {sidebarItems.map((item) => (
                 

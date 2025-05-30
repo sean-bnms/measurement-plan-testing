@@ -6,7 +6,7 @@ import Dropdown from "../../components/Dropdown";
 /**
  * A reusable dropdown/select component with optional label, error, and tooltip.
  *
- * @typedef {object} TemplateDocumentationItemEditorProps
+ * @typedef {object} EventDocumentationItemEditorProps
  * @property {object} itemMetadata - The metadata object with the keys {description, type, options, optional}
  * @property {string} itemPath - The path for the variable
  * @property {Function} onToggle - Function called when the toggle input see its value being modified
@@ -14,7 +14,7 @@ import Dropdown from "../../components/Dropdown";
  * @property {Function} onSelectType - Function called when the data type input field is modified
  * @property {Function} onInputValue - Function called when the multi values input field is modified
  */
-export default function TemplateDocumentationItemEditor({
+export default function EventDocumentationItemEditor({
     itemMetadata, 
     itemPath, 
     onToggle, 

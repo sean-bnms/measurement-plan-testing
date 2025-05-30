@@ -1,24 +1,24 @@
 import { useParams } from "react-router-dom";
 
-import TemplateView from "../features/templates/TemplateView";
+import EventView from "../features/events/EventView";
 import EntityViewPage from "../layout/EntityViewPage";
 import EntityNotFound from "../layout/EntityNotFound";
 
-import { deleteTemplate, getTemplate } from "../utils/TemplateStore";
+import { deleteEvent, getEvent } from "../utils/EntityStore";
 import useEntityData from "../hooks/useEntityData";
 
 
-export default function TemplateViewPage() {
+export default function EventViewPage() {
   const { id } = useParams();
-  const { entity: template, error, loading } = useEntityData(id, getTemplate);
+  const { entity: event, error, loading } = useEntityData(id, getEvent);
 
   const entityRoutingParams = {
-    name: "Template",
-    collectionName: "Templates",
-    path: "/templates"
+    name: "Event",
+    collectionName: "Events",
+    path: "/events"
   }
 
-  // Template was not found
+  // Event was not found
   if (error === "404") {
     return (
     <EntityNotFound
@@ -28,7 +28,7 @@ export default function TemplateViewPage() {
     />);
   }
 
-  // Template Data is loading
+  // Event Data is loading
   if (loading) {
     return <p className="p-4">Loading...</p>;
   }
@@ -36,15 +36,14 @@ export default function TemplateViewPage() {
   return (
     <EntityViewPage
       id={id}
-      deleteEntityById={deleteTemplate}
+      deleteEntityById={deleteEvent}
       entityHeaderParams={{
-        name: template.name,
-        description: template.description ? template.description : null,
-        category: template.category ? template.category : null
+        name: event.name,
+        category: event.category ? event.category : null
       }}
       entityRoutingParams={entityRoutingParams}
     >
-      <TemplateView template={template} />
+      <EventView event={event} />
     </EntityViewPage>
   )
 }
